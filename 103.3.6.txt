@@ -1,0 +1,139 @@
+********************************************************************************
+* 1 0 3 . 3 . 6 .   f i n d                                                    *
+********************************************************************************
+
+     ******************************
+     * References
+     ******************************
+
+     1. ~$ man find
+     2. shotts_W_2012.pdf (220 — 231)
+
+     ******************************
+     * Overview
+     ******************************
+
+     'find' — searches for files or directories in a directory hierarchy.
+
+     'find' is followed by an expression or expressions, which extend its
+     functionality. Expressions are evaluated from left to right. They are made
+     up of:
+          1. options (which affect the overall operation of 'find' rather than
+          the processing of files and always return 'true');
+          2. tests (which return a 'true' or 'false' value for every file or
+          directory that 'find' checks);
+          3. actions (which affect the processing of files and return a 'true'
+          or 'false' value for every file or directory that 'find' checks).
+
+     ******************************
+     * How-to
+     ******************************
+
+     ~$ find ~
+
+     ~$ find ~ | wc -l
+
+     # T e s t s
+
+     ~$ find ~ -type d # Match files by type.
+
+     ~$ find ~ -type d | wc -l
+
+     ~$ find ~ -type f -name '*.pdf' -size +1M # Match files by type, name and
+     size.
+
+     ~$ find ~ -type f -name '*.pdf' -size +1M | wc -l
+
+     ~$ find ~ -type f -name '*.pdf' -amin -10 # Match files last accessed less
+     than 10 minutes ago.
+
+     ~$ find ~ -type f -name '*.pdf' -amin 10 # Match files last accessed
+     exactly 10 minutes ago.
+
+     ~$ find ~ -type f -name '*.pdf' -amin +10 # Match files last accessed
+     greater than 10 minutes ago.
+
+     ~$ find ~ -type f -name 'shotts-W-2012.pdf' -anewer ivan/docs/pub/computer-
+     sciences/system-administration/linux/shotts-W-2012.pdf # Match the file
+     'shotts-W-2012.pdf' if it was last accessed more recently than it was
+     modified.
+
+     ~$ find ~ -type f -name '*.pdf' -atime -1 # Match files last accessed less
+     than 1 * 24 hours ago.
+
+     ~$ find ~ -type f -name '*.pdf' -atime 1 # Match files last accessed
+     exactly 1 * 24 hours ago.
+
+     ~$ find ~ -type f -name '*.pdf' -atime +1 # Match files last accessed
+     greater than 1 * 24 hours ago.
+
+     ~$ find ~ -type f -name '*.pdf' -cmin -10 # Match files whose status was
+     last changed less than 10 minutes ago.
+
+     ~$ find ~ -type f -name '*.pdf' -cmin 10 # Match files whose status was
+     last changed exactly 10 minutes ago.
+
+     ~$ find ~ -type f -name '*.pdf' -cmin +10 # Match files whose status was
+     last changed greater than 10 minutes ago.
+
+     ~$ find ~ -type f -name 'shotts-W-2012.pdf' -cnewer ivan/docs/pub/computer-
+     sciences/system-administration/linux/shotts-W-2012.pdf # Match the file
+     'shotts-W-2012.pdf' if it was last changed more recently than it was
+     modified.
+
+     ~$ find ~ -type f -name '*.pdf' -ctime -1 # Match files whose status was
+     last changed less than 1 * 24 hours ago.
+
+     ~$ find ~ -type f -name '*.pdf' -ctime 1 # Match files whose status was
+     last changed exactly 1 * 24 hours ago.
+
+     ~$ find ~ -type f -name '*.pdf' -ctime +1 # Match files whose status was
+     last changed greater than 1 * 24 hours ago.
+
+     ~$ find ~ -type f -empty # Match empty files or directories.
+
+     # A c t i o n s
+
+     ~$ find ~ -type f -name '*.pdf' -delete # Removes matches. Implies the
+     '-depth' option.
+
+     ~$ find ~ -type f -name '*.pdf' -fls file.txt # Like '-ls' but writes to
+     file instead on the standard output.
+
+     ~$ find ~ -type f -name '*.pdf' -fprint file.txt # Like '-print' but
+     writes to file instead on the standard output.
+
+     ~$ find ~ -type f -name '*.pdf' -fprint0 file.txt # Like '-print0' but
+     writes to file instead on the standard output.
+
+     ~$ find ~ -type f -name '*.pdf' -ls # Lists matches in the 'ls -dils'
+     format on the standard output.
+
+     ~$ find ~ -type f -name '*.pdf' # Implies the '-print' action.
+     # Or:
+     ~$ find ~ -type f -name '*.pdf' -print # Prints the full pathname and
+     filename on the standard output, followed by a newline character ('\n').
+
+     ~$ find ~ -type f -name '*.pdf' -print0 # Prints the full pathname and
+     filename on the standard output, followed by a null character ('\0'). This
+     allows filenames that contain newline or other type of whitespace
+     characters to be correctly interpreted by programs that pipe (process) the
+     'find' output.
+
+     ~$ find ~ -type f -name '*.pdf' -exec ls -dils '{}' ';' # Executes the
+     command 'ls -dils' for each match (like the '-ls' action). The string '{}'
+     is replaced by the current filename being processed. The string ';' is a
+     required delimeter indicating the end of the command for each filename
+     being processed.
+
+     ~$ find ~ -type f -name '*.pdf' -ok ls -dils '{}' ';' # Like '-exec' but
+     prompts the user before the execution of each command.
+
+     ~$ find ~ -type f -name '*.pdf' -exec ls -dils '{}' '+' # Like '-exec ls
+     -dils '{}' ';'' but combines the results of the search into an argument
+     list for a single execution of the command on all matches at once.
+     # Or:
+     ~$ find ~ -type f -name '*.pdf' | xargs ls -dils
+
+     ~$ find ~ -type f -name '*.pdf' -print0 | xargs --null ls -dils # The input
+     of 'xargs' is followed by a null character ('\0'), too.
